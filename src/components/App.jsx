@@ -13,7 +13,7 @@ export const App = () => {
         padding: 40
       }}
     >
-      <Feedback /> //hgfghhfghd
+      <Feedback /> 
     </div>
   );
 };
