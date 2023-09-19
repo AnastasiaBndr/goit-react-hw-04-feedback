@@ -1,0 +1,16 @@
+.statistics {
+  background-color: rgb(213, 247, 255);
+  padding: 30px;
+  border-radius: 10px;
+}
+
+.statistics__results > p:nth-child(-n + 2) {
+  margin-right: 10px;
+}
+
+.statistics__results > p {
+  text-align: left;
+}
+.statistics__results {
+  border-bottom: 5px solid rgb(136, 235, 255);
+}
