@@ -1,54 +1,59 @@
-import React, { Component } from 'react';
+import { useEffect, useState } from 'react';
 import css from './Feedback.module.css';
 import Statistics from '../Statistics';
 import FeedbackOptions from '../FeedbackOptions';
 import Section from '../Section';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
-export class Feedback extends Component {
-    state = {
-        good: 0,
-        neutral: 0,
-        bad: 0
-    }
+export default function Feedback() {
+const [good, setGood]=useState(0);
+const [neutral, setNeutral]=useState(0);
+const [bad, setBad]=useState(0);
+const [countTotalFeedback, setCountTotalFeedback]=useState(0);
+const[posFeedbackPercentage, setPosFeedbackPercentage]=useState(0);
 
-    countTotalFeedback() {
-        return this.state.good + this.state.neutral + this.state.bad;
-    }
+const handleLeaveFeedback = e =>{
 
-    countPositiveFeedbackPercentage() {
-        return Math.round((this.state.good) / (this.state.neutral + this.state.bad + this.state.good) * 100);
-    }
-
-    handleLeaveFeedback = (option) => {
-        this.setState((prevState) => ({ [option.toLowerCase()]: prevState[option.toLowerCase()] + 1 }));
-    };
-
-    render() {
-        const { good, bad, neutral } = this.state;
-        const options = ['Good', 'Neutral', 'Bad'];
-
-        return (<div className={css.feedback__container}>
-
-            <Section title="Please leave feedback">
-                <FeedbackOptions options={options} onLeaveFeedback={this.handleLeaveFeedback} />
-            </Section>
-
-            <Section title="Statistics">
-                {good === 0 && bad === 0 && neutral === 0 ? (<p>No feedback given</p>) : (<Statistics
-                    good={good}
-                    neutral={neutral}
-                    bad={bad}
-                    total={this.countTotalFeedback()}
-                    positivePercentage={this.countPositiveFeedbackPercentage()} />)}
-
-            </Section>
-
-
-
-        </div>)
-    }
+        switch(e.toLowerCase()){
+            case 'good':
+                setGood(prevState => prevState+1);
+                break;
+            case 'neutral':
+                setNeutral(prevState => prevState+1);
+                break;
+            case 'bad':
+                setBad(prevState => prevState+1);
+                break;
+            default: return;
+        }
 }
+useEffect(()=>{
+    setCountTotalFeedback(good+neutral+bad);
+    setPosFeedbackPercentage(Math.round((good) / (neutral + bad + good) * 100));
+},[good, neutral, bad]);
+
+
+const options = ['Good', 'Neutral', 'Bad'];
+
+return (
+<div className={css.feedback__container}>
+                <Section title="Please leave feedback">
+                    <FeedbackOptions options={options} onLeaveFeedback={handleLeaveFeedback} />
+                </Section>
+    
+                <Section title="Statistics">
+                    {good === 0 && bad === 0 && neutral === 0 ? (<p>No feedback given</p>) : (<Statistics
+                        good={good}
+                         neutral={neutral}
+                        bad={bad}
+                        total={countTotalFeedback}
+                        positivePercentage={posFeedbackPercentage} />)}
+    
+                </Section>
+             </div>)
+
+}
+
 
 Feedback.propTypes = {
     good: PropTypes.number,
